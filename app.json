@@ -25,6 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permita o acesso à localização para registrar o local do chamado."
+        }
+      ]
+    ]
   }
 }
