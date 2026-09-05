@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db, ALUNO_ID } from '../firebase/config';
+
 import {
   Alert,
   Image,
@@ -13,6 +17,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 
 export default function NewCallScreen() {
+  const navigation = useNavigation();
   // Estados: "caixinhas" que guardam o que o usuário digita ou a foto que escolhe
   const [description, setDescription] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
@@ -21,6 +26,7 @@ export default function NewCallScreen() {
   const [address, setAddress] = useState<string | null>(null);
   // Controla o texto "Buscando localização..." enquanto aguardamos o GPS
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Função para tirar foto com a câmera
   async function handleTakePhoto() {
@@ -104,6 +110,32 @@ export default function NewCallScreen() {
       setLoadingLocation(false);
     }
   }
+    async function handleCreateCall() {
+    setSaving(true);
+
+    try {
+      await addDoc(collection(db, 'alunos', ALUNO_ID, 'chamados'), {
+        description,
+        photoUri,
+        address,
+        status: 'aberto',
+        criadoEm: serverTimestamp(),
+      });
+
+      Alert.alert('Sucesso', 'Chamado registrado!');
+      setDescription('');
+      setPhotoUri(null);
+      setAddress(null);
+      navigation.navigate('CallList');
+    } catch (error) {
+      Alert.alert(
+        'Erro',
+        'Não foi possível salvar o chamado. Tente novamente.'
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
@@ -171,14 +203,16 @@ export default function NewCallScreen() {
 
       <TouchableOpacity
         style={[
-          styles.button, 
-          styles.confirmButton, 
-          !description && styles.disabledButton
+          styles.button,
+          styles.confirmButton,
+          (!description || saving) && styles.disabledButton,
         ]}
-        disabled={!description}
-        onPress={() => Alert.alert('Sucesso', 'Chamado registrado localmente!')}
-      >
-        <Text style={styles.buttonText}>Criar Chamado</Text>
+        disabled={!description || saving}
+        onPress={handleCreateCall}
+        >
+        <Text style={styles.buttonText}>
+          {saving ? 'Salvando...' : 'Criar Chamado'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
