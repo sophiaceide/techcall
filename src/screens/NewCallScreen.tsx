@@ -17,8 +17,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 
 export default function NewCallScreen() {
-  const navigation = useNavigation();
-  // Estados: "caixinhas" que guardam o que o usuário digita ou a foto que escolhe
+  const navigation = useNavigation<any>();  
   const [description, setDescription] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
@@ -140,7 +139,6 @@ export default function NewCallScreen() {
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <Text style={styles.title}>Novo Chamado</Text>
-      
       <Text style={styles.label}>Descrição do problema</Text>
       <TextInput
         style={styles.input}
@@ -167,8 +165,23 @@ export default function NewCallScreen() {
         </View>
       )}
 
+       <View style={styles.buttonRow}>
+        <TouchableOpacity 
+          style={[styles.button, styles.cameraButton]}
+          onPress={handleTakePhoto}>
+          <Text style={styles.buttonText}>Câmera</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.button, styles.galleryButton]}
+          onPress={handlePickFromGallery}>
+          <Text style={styles.buttonText}>Galeria</Text>
+        </TouchableOpacity>
+      </View>
+
+
       {/* Seção de Localização */}
-      <Text style={styles.label}>Localização do chamado</Text>
+      <Text style={[styles.label, styles.locationLabel]}>Localização do chamado</Text>
       {loadingLocation ? (
         <Text style={styles.placeholderText}>Buscando localização...</Text>
       ) : address ? (
@@ -187,20 +200,7 @@ export default function NewCallScreen() {
         </Text>
       </TouchableOpacity>
 
-      <View style={styles.buttonRow}>
-        <TouchableOpacity 
-          style={[styles.button, styles.cameraButton]}
-          onPress={handleTakePhoto}>
-          <Text style={styles.buttonText}>Câmera</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.button, styles.galleryButton]}
-          onPress={handlePickFromGallery}>
-          <Text style={styles.buttonText}>Galeria</Text>
-        </TouchableOpacity>
-      </View>
-
+     
       <TouchableOpacity
         style={[
           styles.button,
@@ -217,42 +217,128 @@ export default function NewCallScreen() {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f5f5f5' },
-  content: { padding: 20, paddingBottom: 40 },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: '600', marginTop: 16, marginBottom: 8 },
-  input: { 
-    borderWidth: 1, 
-    borderColor: '#ccc', 
-    borderRadius: 8,
-    backgroundColor: '#fff', 
-    padding: 12, 
-    minHeight: 80, 
-    textAlignVertical: 'top'
+  screen: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
   },
-  placeholder: { 
-    height: 160, 
-    borderRadius: 8, 
-    borderWidth: 1, 
-    borderColor: '#ccc', 
-    borderStyle: 'dashed', 
-    backgroundColor: '#fff', 
+
+  content: {
+    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+
+  label: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginTop: 25,
+    marginBottom: 8,
+  },
+
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    padding: 12,
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+
+  placeholder: {
+    height: 160,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  placeholderText: { color: '#999' },
-  photo: { width: '100%', height: 200, borderRadius: 8 },
-  removeButton: { marginTop: 8, alignItems: 'center' },
-  removeButtonText: { color: '#d32f2f', fontWeight: 'bold' },
-  buttonRow: { flexDirection: 'row', marginTop: 16, gap: 10 },
-  button: { flex: 1, borderRadius: 8, padding: 14, alignItems: 'center' },
-  cameraButton: { backgroundColor: '#1565c0' },
-  galleryButton: { backgroundColor: '#6a1b9a' },
-  confirmButton: { backgroundColor: '#2e7d32', marginTop: 20 },
-  disabledButton: { backgroundColor: '#a5d6a7' },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
-  addressText: { fontSize: 14, color: '#333', marginBottom: 8 },
-  locationButton: { backgroundColor: '#00695c', marginBottom: 16 },
+
+  placeholderText: {
+    color: '#999',
+  },
+
+  photo: {
+    width: '100%',
+    height: 320,
+    borderRadius: 8,
+    marginTop: 5,
+    marginBottom: 10,
+    resizeMode: 'cover',
+  },
+
+  removeButton: {
+    marginTop: 8,
+    alignItems: 'center',
+  },
+
+  removeButtonText: {
+    color: '#d32f2f',
+    fontWeight: 'bold',
+  },
+
+  buttonRow: {
+    flexDirection: 'row',
+    marginTop: 16,
+    gap: 10,
+  },
+
+   locationButton: {
+    backgroundColor: '#695ea8',
+    marginTop: 25,
+    marginBottom: 18,
+    width: '85%',
+    alignSelf: 'center',
+  },
+
+  confirmButton: {
+    backgroundColor: '#5797cb',
+    marginTop: 18,
+    width: '85%',
+    alignSelf: 'center',
+  },
+
+  button: {
+  flex: 1,
+  borderRadius: 8,
+  padding: 14,
+  alignItems: 'center',
+},
+
+  cameraButton: {
+    backgroundColor: '#9978bb',
+  },
+
+  galleryButton: {
+    backgroundColor: '#9978bb',
+  },
+
+
+  disabledButton: {
+    backgroundColor: '#90CAF9',
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  addressText: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+  },
+
+  locationLabel: {
+  marginTop: 35,
+},
 });

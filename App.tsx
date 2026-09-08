@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import CallDetailScreen from   './src/screens/CallDetailScreen.tsx';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import NewCallScreen from './src/screens/NewCallScreen';
 import CallListScreen from './src/screens/CallListScreen';
+import CallDetailScreen from './src/screens/CallDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +25,13 @@ export default function App() {
           component={NewCallScreen}
           options={{ title: 'Novo Chamado' }}
         />
+
+        <Stack.Screen
+          name="CallDetail"
+          component={CallDetailScreen}
+          options={{ title: 'Detalhes do Chamado' }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

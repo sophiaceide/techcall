@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,6 +26,7 @@ export default function CallDetailScreen({ route }: any) {
 
   const [chamado, setChamado] = useState<Chamado | null>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     async function carregarChamado() {
@@ -60,6 +62,8 @@ export default function CallDetailScreen({ route }: any) {
   async function mudarStatus(novoStatus: string) {
     if (!chamado) return;
 
+    setSaving(true);
+
     try {
       const chamadoRef = doc(
         db,
@@ -82,6 +86,8 @@ export default function CallDetailScreen({ route }: any) {
         'Erro',
         'Não foi possível atualizar o status.'
       );
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -106,7 +112,24 @@ export default function CallDetailScreen({ route }: any) {
       <Text style={styles.title}>Detalhes do Chamado</Text>
 
       <Text style={styles.label}>Descrição:</Text>
-      <Text style={styles.text}>{chamado.description}</Text>
+      <Text style={styles.text}>
+        {chamado.description}
+      </Text>
+
+      <Text style={styles.label}>Foto:</Text>
+
+      {chamado.photoUri ? (
+        <Image
+          source={{ uri: chamado.photoUri }}
+          style={styles.photo}
+        />
+      ) : (
+        <View style={styles.photoPlaceholder}>
+          <Text style={styles.placeholderText}>
+            Nenhuma foto anexada.
+          </Text>
+        </View>
+      )}
 
       <Text style={styles.label}>Endereço:</Text>
       <Text style={styles.text}>
@@ -114,26 +137,48 @@ export default function CallDetailScreen({ route }: any) {
       </Text>
 
       <Text style={styles.label}>Status:</Text>
-      <Text style={styles.status}>{chamado.status}</Text>
+      <Text style={styles.status}>
+        {chamado.status}
+      </Text>
 
       {chamado.status === 'aberto' && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => mudarStatus('em atendimento')}
-        >
-          <Text style={styles.buttonText}>
-            Iniciar atendimento
-          </Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => mudarStatus('atendendo')}
+            disabled={saving}
+          >
+            <Text style={styles.buttonText}>
+              {saving
+                ? 'Salvando...'
+                : 'Iniciar Atendimento'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => mudarStatus('cancelado')}
+            disabled={saving}
+          >
+            <Text style={styles.buttonText}>
+              {saving
+                ? 'Salvando...'
+                : 'Cancelar Chamado'}
+            </Text>
+          </TouchableOpacity>
+        </>
       )}
 
-      {chamado.status === 'em atendimento' && (
+      {chamado.status === 'atendendo' && (
         <TouchableOpacity
           style={styles.button}
-          onPress={() => mudarStatus('resolvido')}
+          onPress={() => mudarStatus('concluido')}
+          disabled={saving}
         >
           <Text style={styles.buttonText}>
-            Marcar como resolvido
+            {saving
+              ? 'Salvando...'
+              : 'Concluir Atendimento'}
           </Text>
         </TouchableOpacity>
       )}
@@ -153,40 +198,81 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   title: {
-    fontSize: 24,
+    fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 2,
   },
 
   label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 15,
-    marginBottom: 5,
+    fontSize: 19,
+    fontWeight: '700',
+    marginTop: 12,
+    marginBottom: 7,
   },
 
   text: {
     fontSize: 16,
+    color: '#333',
+    lineHeight: 22,
+  },
+
+  photo: {
+    width: '100%',
+    height: 360,
+    borderRadius: 8,
+    marginTop: 5,
+    marginBottom: 10,
+    resizeMode: 'cover',
+  },
+
+  photoPlaceholder: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  placeholderText: {
+    color: '#999',
+    fontSize: 15,
   },
 
   status: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    textTransform: 'capitalize',
   },
 
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#5797cb',
     borderRadius: 8,
     padding: 14,
     alignItems: 'center',
+    width: '85%',
+    alignSelf: 'center',
     marginTop: 10,
   },
 
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 15,
+  },
+
+  cancelButton: {
+    backgroundColor: '#c62828',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    width: '85%',
+    alignSelf: 'center',
+    marginTop: 10,
   },
 });

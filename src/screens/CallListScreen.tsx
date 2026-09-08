@@ -87,15 +87,63 @@ export default function CallListScreen({ navigation }: any) {
     </View>
   );
 }
- 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f5f5f5', padding: 16 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  list: { paddingBottom: 80 },
-  placeholderText: { color: '#999', textAlign: 'center', marginTop: 40 },
-  card: { backgroundColor: '#fff', borderRadius: 8, padding: 16, marginBottom: 10, borderWidth: 1, borderColor: '#eee' },
-  cardTitle: { fontSize: 16, fontWeight: '600' },
-  cardStatus: { fontSize: 13, color: '#666', marginTop: 4, textTransform: 'uppercase' },
-  newButton: { position: 'absolute', bottom: 16, left: 16, right: 16, backgroundColor: '#2e7d32', borderRadius: 8, padding: 16, alignItems: 'center' },
-  newButtonText: { color: '#fff', fontWeight: 'bold' },
+ const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    padding: 16,
+  },
+
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  list: {
+    paddingBottom: 80,
+  },
+
+  placeholderText: {
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 40,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  cardStatus: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 4,
+    textTransform: 'uppercase',
+  },
+
+  newButton: {
+  position: 'absolute',
+  bottom: 55,
+  left: 16,
+  right: 16,
+  backgroundColor: '#42A5F5',
+  borderRadius: 8,
+  padding: 16,
+  alignItems: 'center',
+},
+
+  newButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
